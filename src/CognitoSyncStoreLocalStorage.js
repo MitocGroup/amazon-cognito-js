@@ -27,7 +27,7 @@ AWS.CognitoSyncManager.StoreLocalStorage = (function() {
      */
 
     var CognitoSyncStoreLocalStorage = function () {
-        this.store = window.localStorage;
+        this.store = this._isAvailable() ? window.localStorage : new AWS.CognitoSyncManager.StoreInMemory();
     };
 
     /**
@@ -181,20 +181,45 @@ AWS.CognitoSyncManager.StoreLocalStorage = (function() {
     CognitoSyncStoreLocalStorage.prototype.wipe = function (callback) {
 
         // We don't want to remove the cached identity id. Remove all other keys.
+        // Remove own keys only
+
+        var ownKeysRegExp = /^[\w-]+:[0-9a-f-]+\..+$/;
 
         for (var prop in this.store) {
             if (this.store.hasOwnProperty(prop)) {
-                if (prop.indexOf('aws.cognito.identity') === -1) {
+                if (ownKeysRegExp.test(prop)) {
                     this.store.removeItem(prop);
                 }
             }
         }
+
+        // exception from ownKeysRegExp
+        this.store.removeItem(this.makeKey('_internal', '_metadata'));
 
         if (callback) {
             return callback(null, true);
         }
         return this;
 
+    };
+
+    /**
+     * Checks for localStorage availability.
+     */
+
+    CognitoSyncStoreLocalStorage.prototype._isAvailable = function () {
+        var uid = new Date();
+        var result;
+
+        try {
+            window.localStorage.setItem(uid, uid);
+            result = window.localStorage.getItem(uid) == uid;
+            window.localStorage.removeItem(uid);
+        } catch (exception) {
+            result = false;
+        }
+
+        return result;
     };
 
     return CognitoSyncStoreLocalStorage;

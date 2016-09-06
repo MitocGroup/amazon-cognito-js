@@ -1,3 +1,5 @@
+var AWS = require('aws-sdk');
+
 require('./src/CognitoSyncManager');
 require('./src/CognitoSyncConflict');
 require('./src/CognitoSyncDataset');

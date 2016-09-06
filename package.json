@@ -23,6 +23,9 @@
   ],
   "keywords": ["amazon","aws","cognito","identity","sync"],
   "main": "index.js",
+  "optionalDependencies": {
+    "aws-sdk": "2.x.x"
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
