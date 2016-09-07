@@ -1,4 +1,5 @@
-var AWS = require('aws-sdk');
+var globalScope = window || global;
+globalScope.AWS = require('aws-sdk');
 
 require('./src/CognitoSyncManager');
 require('./src/CognitoSyncConflict');
