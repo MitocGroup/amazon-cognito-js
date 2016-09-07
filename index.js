@@ -1,4 +1,4 @@
-var globalScope = window || global;
+var globalScope = typeof window === 'undefined' ? global : window;
 globalScope.AWS = require('aws-sdk');
 
 require('./src/CognitoSyncManager');
